@@ -3,6 +3,7 @@ package com.example.demo;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
+import org.apache.cxf.message.MessageContentsList;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -14,6 +15,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CodeProducer implements Processor {
     ProducerTemplate producer;
@@ -24,13 +27,26 @@ public class CodeProducer implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        String code = exchange.getProperty("Code", String.class);
-        String date = exchange.getProperty("Date", String.class);
-        String message = exchange.getIn().getBody(String.class);
-        exchange.getIn().setBody(parse(message, code, date));
+        int code = exchange.getProperty("Code", Integer.class);
+        String date = exchange.getProperty("On_date", String.class);
+        MessageContentsList list = (MessageContentsList) exchange.getIn().getBody();
+        GetCursOnDateResult result = (GetCursOnDateResult) list.get(0);
+        StringBuilder builder = new StringBuilder();
+        for (GetCursOnDateResult.ValuteData.ValuteCursOnDate valuteCursOnDate : result.diffgram.getValuteCursOnDate()) {
+            if (valuteCursOnDate.vcode == code) {
+                builder.append("Date: ").append(date)
+                        .append(", Code: ").append(valuteCursOnDate.vcode)
+                        .append(", Curs: ").append(valuteCursOnDate.vcurs)
+                        .append(", Value: ").append(valuteCursOnDate.vname);
+
+                System.out.println(builder);
+            }
+        }
+        exchange.getIn().setBody(builder);
+        //exchange.getIn().setBody(parsePAYLOAD(message, code, date));
     }
 
-    public String parse(String message, String code, String date)
+    public String parsePAYLOAD(String message, String code, String date)
             throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();

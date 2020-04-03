@@ -15,8 +15,8 @@ public class MyProducer implements Processor {
     public void process(Exchange exchange) throws Exception {
         Currency currency = exchange.getIn().getBody(Currency.class);
         exchange.setProperty("Code", currency.getCode());
-        exchange.setProperty("Date", currency.getDate());
-        exchange.getIn().setBody(getSoap(currency.getDate().toString()));
+        exchange.setProperty("On_date", currency.getDate());
+        exchange.getIn().setBody(currency.getDate().toString());
     }
 
     private String getSoap(String date) {

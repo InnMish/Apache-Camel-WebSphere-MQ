@@ -1,31 +1,37 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:cxf="http://camel.apache.org/schema/cxf" xmlns:xsl="http://java.sun.com/JSP/Page"
+       xmlns:cxf="http://camel.apache.org/schema/cxf"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
-    <cxf:cxfEndpoint id="IF310SapEndpoint"
-                     address="http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx?exchangePattern=InOut"
-                     wsdlURL="file:C:\Users\imishustina\IdeaProjects\demo\src\main\resources\DI.wsdl"
+
+<cxf:cxfEndpoint id="IF310SapEndpoint"
+                     address="http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx"
+                     serviceClass="com.example.demo.DailyInfoSoap"
+                     wsdlURL="file:C:\Users\imishustina\IdeaProjects\Apache-Camel-WebSphere-MQ\src\main\resources\DI.wsdl"
                      endpointName="DailyInfoSoap12">
         <cxf:properties>
-            <entry key="dataFormat" value="PAYLOAD"/>
+            <entry key="dataFormat" value="POJO"/>
         </cxf:properties>
     </cxf:cxfEndpoint>
 
     <camelContext xmlns="http://camel.apache.org/schema/spring">
         <route>
-            <!--<from uri="file:C:/Users/imishustina/IdeaProjects/demo/src/main/resources/messages?filename=soap.txt&amp;noop=true"/>-->
-            <from uri="wmq:queue:mishusitna_queue"/>
+            <from uri="file:C:\Users\imishustina\IdeaProjects\Apache-Camel-WebSphere-MQ\src\main\resources\messages?filename=soap.txt&amp;noop=true"/>
+            <!--<from uri="wmq:queue:mishusitna_queue"/>-->
             <convertBodyTo type="com.example.demo.Currency"/>
             <bean ref="myProducer" method="process"/>
-            <setHeader name="Content-Type"><constant>application/soap+xml; charset=utf-8</constant></setHeader>
-            <to uri="cxf:bean:IF310SapEndpoint?defaultOperationName=GetCursOnDate"/>
+            <setExchangePattern pattern="InOut"/>
+            <setHeader name="Content-Type">
+                <constant>application/text; charset=utf-8</constant>
+            </setHeader>
+            <to uri="cxf://bean://IF310SapEndpoint?defaultOperationName=GetCursOnDate"/>
             <bean ref="codeProducer" method="process"/>
-            <to uri="wmq:topic:topic_m"/>
+            <!--<to uri="file:C:\Users\imishustina\IdeaProjects\Apache-Camel-WebSphere-MQ\src\main\resources\messages?filename=code.txt"/>
+            <to uri="wmq:topic:topic_m"/>-->
         </route>
     </camelContext>
 

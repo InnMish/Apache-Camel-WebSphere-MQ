@@ -14,7 +14,7 @@
 
 	</wsdl:documentation>
 	<wsdl:types>
-		<s:schema xmlns="http://www.w3.org/1999/XMLSchema" elementFormDefault="qualified" targetNamespace="http://web.cbr.ru/">
+		<s:schema xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://web.cbr.ru/">
 			<s:element name="SaldoXML">
 				<s:complexType>
 					<s:sequence>
