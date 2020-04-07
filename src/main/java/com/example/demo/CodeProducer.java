@@ -3,6 +3,7 @@ package com.example.demo;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
+import org.apache.cxf.helpers.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -13,7 +14,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 
 public class CodeProducer implements Processor {
     ProducerTemplate producer;
@@ -26,7 +30,8 @@ public class CodeProducer implements Processor {
     public void process(Exchange exchange) throws Exception {
         String code = exchange.getProperty("Code", String.class);
         String date = exchange.getProperty("Date", String.class);
-        String message = exchange.getIn().getBody(String.class);
+        InputStream stream = exchange.getIn().getBody(InputStream.class);
+        String message = IOUtils.toString(stream, StandardCharsets.UTF_8.name());
         exchange.getIn().setBody(parse(message, code, date));
     }
 

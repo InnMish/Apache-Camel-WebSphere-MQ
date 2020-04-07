@@ -21,8 +21,12 @@ public class MyProducer implements Processor {
 
     private String getSoap(String date) {
         return
-                "      <web:GetCursOnDate xmlns:web=\"http://web.cbr.ru/\">\n" +
+                "         <soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:web=\"http://web.cbr.ru/\">\n" +
+                        "   <soapenv:Header/>\n" +
+                        "   <soapenv:Body>\n" +
+                        "      <web:GetCursOnDate>\n" +
                         "         <web:On_date>" + date + "</web:On_date>\n" +
-                        "      </web:GetCursOnDate>";
+                        "      </web:GetCursOnDate> </soapenv:Body>\n" +
+                        "</soapenv:Envelope>";
     }
 }
