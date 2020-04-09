@@ -15,8 +15,6 @@ public class DemoApplication {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(DemoApplication.class, args);
-        JAXBContext jaxbContext = JAXBContext.newInstance(CustomerList.class);
-        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
     }
 }
