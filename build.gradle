@@ -34,9 +34,12 @@ dependencies {
     testCompile group: 'org.apache.camel', name: 'camel-jaxb', version: '3.1.0'
     compile group: 'org.apache.camel.springboot', name: 'camel-jaxb-starter', version: '3.1.0'
     compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.1.1'
-
+    compile group: 'org.postgresql', name: 'postgresql', version: '42.2.12'
+    compile group: 'org.apache.camel', name: 'camel-sql', version: '3.1.0'
+    compile group: 'org.apache.camel', name: 'camel-jdbc', version: '3.1.0'
+    compile group: 'commons-dbcp', name: 'commons-dbcp', version: '1.4'
+    runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
 }
-
 test {
     useJUnitPlatform()
 }
